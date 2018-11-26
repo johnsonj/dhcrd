@@ -18,7 +18,6 @@ type DHCPController struct {
 	m             manager.Manager
 	client        clientapi.Client
 	server        net.IP
-	netmask       net.IP
 	leaseDuration time.Duration
 	options       dhcp.Options
 	namespace     string
@@ -29,8 +28,7 @@ func New(m manager.Manager) (*DHCPController, error) {
 		m:      m,
 		client: m.GetClient(),
 		// TODO: these are hardcoded for my network
-		server:        net.IP{10, 10, 0, 1},
-		netmask:       net.IP{255, 255, 0, 0},
+		server:        net.IP{10, 10, 0, 157},
 		namespace:     "network",
 		leaseDuration: 2 * time.Hour,
 	}, nil
@@ -53,7 +51,7 @@ func (h *DHCPController) ServeDHCP(p dhcp.Packet, msgType dhcp.MessageType, opti
 		}
 		log.Printf("[Discover] offering ip (%v)", ip.String())
 		opts := dhcp.Options{
-			dhcp.OptionSubnetMask:       []byte(net.ParseIP(r.Spec.SubnetMask)),
+			dhcp.OptionSubnetMask:       []byte{255, 255, 0, 0},
 			dhcp.OptionRouter:           []byte(net.ParseIP(r.Spec.Router)),
 			dhcp.OptionDomainNameServer: []byte(net.ParseIP(r.Spec.DNS)),
 		}
@@ -105,18 +103,18 @@ func (h *DHCPController) ServeDHCP(p dhcp.Packet, msgType dhcp.MessageType, opti
 			}
 			log.Printf("[Request] created lease (%s) (%v)", lease.Name, lease.Spec)
 
-			// // TODO/HACK: this assumes the nextIp will be in the proper range
-			// // race condition waiting to happen!
-			// // Can we get this info from the client's request instead?
-			// _, r, _ := h.nextIp()
-			// opts := dhcp.Options{
-			// 	dhcp.OptionSubnetMask:       []byte(net.ParseIP(r.Spec.SubnetMask)),
-			// 	dhcp.OptionRouter:           []byte(net.ParseIP(r.Spec.Router)),
-			// 	dhcp.OptionDomainNameServer: []byte(net.ParseIP(r.Spec.DNS)),
-			// }
+			// TODO/HACK: this assumes the nextIp will be in the proper range
+			// race condition waiting to happen!
+			// Can we get this info from the client's request instead?
+			_, r, _ := h.nextIp()
+			opts := dhcp.Options{
+				dhcp.OptionSubnetMask:       []byte{255, 255, 0, 0},
+				dhcp.OptionRouter:           []byte(net.ParseIP(r.Spec.Router)),
+				dhcp.OptionDomainNameServer: []byte(net.ParseIP(r.Spec.DNS)),
+			}
 
 			log.Printf("[Request] request granted, sending ACK")
-			return dhcp.ReplyPacket(p, dhcp.ACK, h.server, ip, h.leaseDuration, options.SelectOrderOrAll(options[dhcp.OptionParameterRequestList]))
+			return dhcp.ReplyPacket(p, dhcp.ACK, h.server, ip, h.leaseDuration, opts.SelectOrderOrAll(options[dhcp.OptionParameterRequestList]))
 		} else {
 			log.Printf("[Request] failed to query for lease: %v", err)
 		}

@@ -1,0 +1,9 @@
+apiVersion: dhcp.johnsonjeff.com/v1alpha1
+kind: Range
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: range-sample
+spec:
+  # Add fields here
+  foo: bar

@@ -20,12 +20,14 @@ import (
 
 	"github.com/johnsonj/dhcrd/pkg/apis"
 	"github.com/johnsonj/dhcrd/pkg/controller"
+	dhcpcontroller "github.com/johnsonj/dhcrd/pkg/controller/dhcp"
 	"github.com/johnsonj/dhcrd/pkg/webhook"
+	dhcp "github.com/krolaw/dhcp4"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
-	"sigs.k8s.io/controller-runtime/pkg/runtime/signals"
+	//	"sigs.k8s.io/controller-runtime/pkg/runtime/signals"
 )
 
 func main() {
@@ -70,10 +72,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Start the Cmd
-	log.Info("Starting the Cmd.")
-	if err := mgr.Start(signals.SetupSignalHandler()); err != nil {
-		log.Error(err, "unable to run the manager")
+	log.Info("starting the DHCP server")
+	c, err := dhcpcontroller.New(mgr)
+	if err != nil {
+		log.Error(err, "unable to create dhcpcontroller")
 		os.Exit(1)
 	}
+	log.Error(dhcp.ListenAndServe(c), "unable to start dhcp")
+
+	// TODO: do we need to start the cmd?
+	// // Start the Cmd
+	// log.Info("Starting the Cmd.")
+	// if err := mgr.Start(signals.SetupSignalHandler()); err != nil {
+	// 	log.Error(err, "unable to run the manager")
+	// 	os.Exit(1)
+	// }
 }

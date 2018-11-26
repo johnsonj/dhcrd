@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["dhcp_example.go"],
+    importpath = "github.com/johnsonj/dhcrd/examples",
+    visibility = ["//visibility:private"],
+    deps = ["@com_github_krolaw_dhcp4//:go_default_library"],
+)
+
+go_binary(
+    name = "examples",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)

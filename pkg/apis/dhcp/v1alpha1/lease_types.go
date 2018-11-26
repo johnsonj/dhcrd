@@ -19,39 +19,39 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// RangeSpec defines the desired state of Range
-type RangeSpec struct {
-	CIDR   string   `json:"cidr"`
-	Router string   `json:"router"`
-	DNS    []string `json:"dns"`
+// LeaseSpec defines the desired state of Lease
+type LeaseSpec struct {
+	Mac string `json:"mac"`
+	// TODO: a proper time type would be appropriate here
+	Expiration string `json:"expiration"`
 }
 
-// RangeStatus defines the observed state of Range
-type RangeStatus struct {
+// LeaseStatus defines the observed state of Lease
+type LeaseStatus struct {
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Range is the Schema for the ranges API
+// Lease is the Schema for the leases API
 // +k8s:openapi-gen=true
-type Range struct {
+type Lease struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   RangeSpec   `json:"spec,omitempty"`
-	Status RangeStatus `json:"status,omitempty"`
+	Spec   LeaseSpec   `json:"spec,omitempty"`
+	Status LeaseStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// RangeList contains a list of Range
-type RangeList struct {
+// LeaseList contains a list of Lease
+type LeaseList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Range `json:"items"`
+	Items           []Lease `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Range{}, &RangeList{})
+	SchemeBuilder.Register(&Lease{}, &LeaseList{})
 }

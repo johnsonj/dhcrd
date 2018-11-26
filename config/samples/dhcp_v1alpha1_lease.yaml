@@ -1,0 +1,9 @@
+apiVersion: dhcp.johnsonjeff.com/v1alpha1
+kind: Lease
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: lease-sample
+spec:
+  # Add fields here
+  foo: bar

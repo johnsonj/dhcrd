@@ -4,12 +4,12 @@ metadata:
   creationTimestamp: null
   labels:
     controller-tools.k8s.io: "1.0"
-  name: ranges.dhcp.johnsonjeff.com
+  name: leases.dhcp.johnsonjeff.com
 spec:
   group: dhcp.johnsonjeff.com
   names:
-    kind: Range
-    plural: ranges
+    kind: Lease
+    plural: leases
   scope: Namespaced
   validation:
     openAPIV3Schema:
@@ -22,18 +22,13 @@ spec:
           type: object
         spec:
           properties:
-            cidr:
+            expiration:
               type: string
-            dns:
-              items:
-                type: string
-              type: array
-            router:
+            mac:
               type: string
           required:
-          - cidr
-          - router
-          - dns
+          - mac
+          - expiration
           type: object
         status:
           type: object

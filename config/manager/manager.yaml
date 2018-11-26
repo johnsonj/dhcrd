@@ -3,13 +3,13 @@ kind: Namespace
 metadata:
   labels:
     controller-tools.k8s.io: "1.0"
-  name: system
+  name: network
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: controller-manager-service
-  namespace: system
+  namespace: network
   labels:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
@@ -24,7 +24,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: controller-manager
-  namespace: system
+  namespace: network
   labels:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
@@ -40,10 +40,12 @@ spec:
         control-plane: controller-manager
         controller-tools.k8s.io: "1.0"
     spec:
+      serviceAccountName: dhcpd-manager
+      hostNetwork: true
       containers:
       - command:
-        - /root/manager
-        image: controller:latest
+        - /app/cmd/manager/manager.runfiles/__main__/cmd/manager/linux_amd64_stripped/manager
+        image: gcr.io/dhcrd-dev/dhcrd:latest
         imagePullPolicy: Always
         name: manager
         env:
@@ -62,8 +64,13 @@ spec:
             memory: 20Mi
         ports:
         - containerPort: 9876
+          hostPort: 9876
           name: webhook-server
           protocol: TCP
+        - containerPort: 67
+          hostPort: 67
+          name: dhcp
+          protocol: UDP
         volumeMounts:
         - mountPath: /tmp/cert
           name: cert
@@ -79,4 +86,4 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: webhook-server-secret
-  namespace: system
+  namespace: network

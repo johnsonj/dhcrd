@@ -14,3 +14,6 @@ gazelle-gomod:
 
 gazelle:
 	bazel run //:gazelle
+
+push:
+	bazel run //cmd/manager:publish

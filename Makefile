@@ -8,3 +8,9 @@ generate:
 
 win:
 	GOOS=windows go build cmd/manager/main.go
+
+gazelle-gomod:
+	bazel run //:gazelle -- update-repos -from_file=go.mod
+
+gazelle:
+	bazel run //:gazelle

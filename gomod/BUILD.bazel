@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["tools.go"],
+    importpath = "github.com/johnsonj/dhcrd/gomod",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//vendor/k8s.io/code-generator/cmd/deepcopy-gen:go_default_library",
+        "//vendor/sigs.k8s.io/controller-tools/cmd/controller-gen:go_default_library",
+    ],
+)

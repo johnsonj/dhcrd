@@ -4,6 +4,10 @@ metadata:
   labels:
     controller-tools.k8s.io: "1.0"
   name: range-sample
+  namespace: network
 spec:
-  # Add fields here
-  foo: bar
+  cidr: "10.10.0.128/25"
+  router: "10.10.0.1"
+  subnetmask: "255.255.255.0"
+  dns: "10.0.0.1"
+

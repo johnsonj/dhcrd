@@ -21,9 +21,10 @@ import (
 
 // RangeSpec defines the desired state of Range
 type RangeSpec struct {
-	CIDR   string   `json:"cidr"`
-	Router string   `json:"router"`
-	DNS    []string `json:"dns"`
+	CIDR       string `json:"cidr"`
+	Router     string `json:"router"`
+	SubnetMask string `json:"subnetmask"`
+	DNS        string `json:"dns"`
 }
 
 // RangeStatus defines the observed state of Range

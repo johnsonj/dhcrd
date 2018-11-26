@@ -27,7 +27,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
-	//	"sigs.k8s.io/controller-runtime/pkg/runtime/signals"
+	"sigs.k8s.io/controller-runtime/pkg/runtime/signals"
 )
 
 func main() {
@@ -71,6 +71,15 @@ func main() {
 		log.Error(err, "unable to register webhooks to the manager")
 		os.Exit(1)
 	}
+	// TODO: do we need to start the cmd?
+	// // Start the Cmd
+	go func() {
+		log.Info("Starting the Cmd.")
+		if err := mgr.Start(signals.SetupSignalHandler()); err != nil {
+			log.Error(err, "unable to run the manager")
+			os.Exit(1)
+		}
+	}()
 
 	log.Info("starting the DHCP server")
 	c, err := dhcpcontroller.New(mgr)
@@ -80,11 +89,4 @@ func main() {
 	}
 	log.Error(dhcp.ListenAndServe(c), "unable to start dhcp")
 
-	// TODO: do we need to start the cmd?
-	// // Start the Cmd
-	// log.Info("Starting the Cmd.")
-	// if err := mgr.Start(signals.SetupSignalHandler()); err != nil {
-	// 	log.Error(err, "unable to run the manager")
-	// 	os.Exit(1)
-	// }
 }

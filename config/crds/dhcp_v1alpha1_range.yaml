@@ -25,14 +25,15 @@ spec:
             cidr:
               type: string
             dns:
-              items:
-                type: string
-              type: array
+              type: string
             router:
+              type: string
+            subnetmask:
               type: string
           required:
           - cidr
           - router
+          - subnetmask
           - dns
           type: object
         status:

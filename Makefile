@@ -5,3 +5,6 @@ manifests:
 
 generate:
 	go generate ./pkg/... ./cmd/...
+
+win:
+	GOOS=windows go build cmd/manager/main.go

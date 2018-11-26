@@ -1,0 +1,3 @@
+version: "1"
+domain: johnsonjeff.com
+repo: github.com/johnsonj/dhcrd

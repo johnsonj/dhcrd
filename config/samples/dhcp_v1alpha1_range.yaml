@@ -8,6 +8,5 @@ metadata:
 spec:
   cidr: "10.10.0.128/25"
   router: "10.10.0.1"
-  subnetmask: "255.255.255.0"
+  subnetmask: "255.255.0.0"
   dns: "10.0.0.1"
-

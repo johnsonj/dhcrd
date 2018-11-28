@@ -24,6 +24,7 @@ type LeaseSpec struct {
 	Mac string `json:"mac"`
 	// TODO: a proper time type would be appropriate here
 	Expiration string `json:"expiration"`
+	Hostname   string `json:"hostname"`
 }
 
 // LeaseStatus defines the observed state of Lease

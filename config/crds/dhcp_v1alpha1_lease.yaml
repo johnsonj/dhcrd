@@ -24,11 +24,14 @@ spec:
           properties:
             expiration:
               type: string
+            hostname:
+              type: string
             mac:
               type: string
           required:
           - mac
           - expiration
+          - hostname
           type: object
         status:
           type: object

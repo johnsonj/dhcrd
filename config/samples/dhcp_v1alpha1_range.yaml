@@ -6,7 +6,9 @@ metadata:
   name: range-sample
   namespace: network
 spec:
-  cidr: "10.10.0.128/25"
+  cidr: "10.10.10.128/25"
   router: "10.10.0.1"
   subnetmask: "255.255.0.0"
-  dns: "10.0.0.1"
+  dns: 
+  - "10.0.0.1"
+  - "8.8.8.8"

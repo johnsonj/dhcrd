@@ -1,11 +1,13 @@
 package dhcp
 
 import (
+	"bytes"
 	"context"
 	"encoding/binary"
 	"fmt"
 	api "github.com/johnsonj/dhcrd/pkg/apis/dhcp/v1alpha1"
 	dhcp "github.com/krolaw/dhcp4"
+	"io"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
@@ -53,7 +55,19 @@ func optionsToString(options dhcp.Options) string {
 			opts += fmt.Sprintf("{ %s: 0x%x }", optCode, val)
 		case dhcp.OptionRequestedIPAddress, dhcp.OptionServerIdentifier, dhcp.OptionRouter,
 			dhcp.OptionDomainNameServer, dhcp.OptionSubnetMask, dhcp.OptionBroadcastAddress:
-			opts += fmt.Sprintf("{ %s: %s }", optCode, net.IP(val))
+
+			var ips []string
+			b := bytes.NewBuffer(val)
+			ip := make([]byte, 4)
+			for {
+				_, err := io.ReadFull(b, ip)
+				if err != nil {
+					break
+				}
+				ips = append(ips, net.IP(ip).To4().String())
+			}
+
+			opts += fmt.Sprintf("{ %s: %s }", optCode, strings.Join(ips, ","))
 		case dhcp.OptionIPAddressLeaseTime, dhcp.OptionRenewalTimeValue, dhcp.OptionRebindingTimeValue:
 			opts += fmt.Sprintf("{ %s: %s }", optCode, time.Duration(binary.BigEndian.Uint32(val))*time.Second)
 		case dhcp.OptionParameterRequestList:
@@ -192,10 +206,15 @@ func (h *DHCPController) buildOptions(ip net.IP) dhcp.Options {
 	// race condition waiting to happen!
 	// Can we get this info from the client's request instead?
 	_, r, _ := h.nextIp()
+
+	var dns []byte
+	for _, d := range r.Spec.DNS {
+		dns = append(dns, []byte(net.ParseIP(d).To4())...)
+	}
 	opts := dhcp.Options{
 		dhcp.OptionSubnetMask:         []byte{255, 255, 0, 0},
 		dhcp.OptionRouter:             []byte(net.ParseIP(r.Spec.Router).To4()),
-		dhcp.OptionDomainNameServer:   []byte(net.ParseIP(r.Spec.DNS).To4()),
+		dhcp.OptionDomainNameServer:   []byte(dns),
 		dhcp.OptionIPAddressLeaseTime: toByteArr(uint32(h.leaseDuration.Seconds())),
 		dhcp.OptionRenewalTimeValue:   toByteArr(uint32(h.leaseDuration.Seconds() / 2)),
 		dhcp.OptionRebindingTimeValue: toByteArr(uint32((h.leaseDuration.Seconds() / 4) + (h.leaseDuration.Seconds() / 2))),

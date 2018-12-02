@@ -25,7 +25,9 @@ spec:
             cidr:
               type: string
             dns:
-              type: string
+              items:
+                type: string
+              type: array
             router:
               type: string
             subnetmask:

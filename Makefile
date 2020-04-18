@@ -2,7 +2,7 @@ all: manifests generate
 
 manifests:
 	# TODO: generated rbac isn't correct
-	go run vendor/sigs.k8s.io/controller-tools/cmd/controller-gen/main.go crd
+	go run sigs.k8s.io/controller-tools/cmd/controller-gen crd
 
 generate:
 	go generate ./pkg/... ./cmd/...

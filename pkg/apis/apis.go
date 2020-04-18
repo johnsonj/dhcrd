@@ -14,7 +14,8 @@ limitations under the License.
 */
 
 // Generate deepcopy for apis
-//go:generate go run ../../vendor/k8s.io/code-generator/cmd/deepcopy-gen/main.go -O zz_generated.deepcopy -i ./... -h ../../hack/boilerplate.go.txt
+// TODO(johnsonj): deepcopy-gen doesn't work if we specify the relative path. This requires the repo to be checked out in the pre-go modules style.
+//go:generate go run k8s.io/code-generator/cmd/deepcopy-gen -O zz_generated.deepcopy -i github.com/johnsonj/dhcrd/pkg/apis/... -h ../../hack/boilerplate.go.txt
 
 // Package apis contains Kubernetes API groups.
 package apis

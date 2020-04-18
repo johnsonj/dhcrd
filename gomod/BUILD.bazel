@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/johnsonj/dhcrd/gomod",
     visibility = ["//visibility:public"],
     deps = [
-        "//vendor/k8s.io/code-generator/cmd/deepcopy-gen:go_default_library",
-        "//vendor/sigs.k8s.io/controller-tools/cmd/controller-gen:go_default_library",
+        "@io_k8s_code_generator//cmd/deepcopy-gen:go_default_library",
+        "@io_k8s_sigs_controller_tools//cmd/controller-gen:go_default_library",
     ],
 )

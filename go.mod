@@ -1,5 +1,7 @@
 module github.com/johnsonj/dhcrd
 
+go 1.14
+
 require (
 	cloud.google.com/go v0.33.1 // indirect
 	github.com/docker/distribution v2.6.2+incompatible // indirect

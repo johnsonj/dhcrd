@@ -7,10 +7,10 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/apis/dhcp/v1alpha1:go_default_library",
-        "//vendor/github.com/krolaw/dhcp4:go_default_library",
-        "//vendor/k8s.io/apimachinery/pkg/api/errors:go_default_library",
-        "//vendor/k8s.io/apimachinery/pkg/apis/meta/v1:go_default_library",
-        "//vendor/sigs.k8s.io/controller-runtime/pkg/client:go_default_library",
-        "//vendor/sigs.k8s.io/controller-runtime/pkg/manager:go_default_library",
+        "@com_github_krolaw_dhcp4//:go_default_library",
+        "@io_k8s_apimachinery//pkg/api/errors:go_default_library",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:go_default_library",
+        "@io_k8s_sigs_controller_runtime//pkg/client:go_default_library",
+        "@io_k8s_sigs_controller_runtime//pkg/manager:go_default_library",
     ],
 )

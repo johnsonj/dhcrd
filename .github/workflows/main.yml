@@ -10,8 +10,24 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        path: src/github.com/johnsonj
+        path: src/github.com/johnsonj/dhcrd
     - uses: actions/setup-go@v2
       with:
         go-version: 1.14.2
     - run: find .
+    - name: Mount bazel cache
+      uses: actions/cache@v1
+      with:
+        path: "/home/runner/.cache/bazel"
+        key: bazel
+    - name: Install bazelisk
+      run: |
+        curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.4.0/bazelisk-linux-amd64"
+        mkdir -p "${GITHUB_WORKSPACE}/bin/"
+        mv bazelisk-linux-amd64 "${GITHUB_WORKSPACE}/bin/bazel"
+        chmod +x "${GITHUB_WORKSPACE}/bin/bazel"
+    - name: Build
+      run: |
+        cd src/github.com/johnsonj/dhcrd
+        "${GITHUB_WORKSPACE}/bin/bazel" build //cmd/manager
+
